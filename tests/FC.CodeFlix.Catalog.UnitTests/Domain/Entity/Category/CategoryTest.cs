@@ -1,4 +1,5 @@
 using FC.CodeFlix.Catalog.Domain.Exceptions;
+using FluentAssertions;
 using DomainEntity = FC.CodeFlix.Catalog.Domain.Entity;
 namespace FC.CodeFlix.Catalog.UnitTests.Domain.Entity.Category;
 
@@ -21,7 +22,7 @@ public class CategoryTest
         var datetimeAfter = DateTime.Now;
         
         // Assert
-        Assert.NotNull(category);
+        category.Should().NotBeNull();
         Assert.Equal(validData.Name, category.Name);
         Assert.Equal(validData.Description, category.Description);
         Assert.NotEqual(default(Guid), category.Id);
@@ -228,5 +229,15 @@ public class CategoryTest
         var exception = Assert.Throws<EntityValidationException>(action);
         // Assert
         Assert.Equal("Description should have at most 10.000 characters", exception.Message);
+    }
+    
+    [Fact(DisplayName = nameof(IdShouldNotBeNull))]
+    [Trait("Domain", "Category - Aggregates")]
+    public void IdShouldNotBeNull()
+    {
+        // Arrange
+        var category = new DomainEntity.Category("Name ok", "Description ok", true);
+        // Assert
+       Assert.NotEqual(default(Guid), category.Id);
     }
 }
